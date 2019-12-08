@@ -1,5 +1,5 @@
-use std::iter::Iterator;
 use std::convert::TryInto;
+use std::iter::Iterator;
 
 /// Fuel required to launch a given module is based on its mass. Specifically, to find the fuel
 /// required for a module, take its mass, divide by three, round down, and subtract 2.
@@ -18,7 +18,8 @@ pub fn fuel_mass(fuel: u32) -> u32 {
 }
 
 pub fn entry_a<I>(lines: I) -> i32
-    where I: Iterator<Item=u32>
+where
+    I: Iterator<Item = u32>,
 {
     let mut total_fuel: i32 = 0;
     for mass in lines {
@@ -28,7 +29,8 @@ pub fn entry_a<I>(lines: I) -> i32
 }
 
 pub fn entry_b<I>(lines: I) -> u32
-    where I: Iterator<Item=u32>
+where
+    I: Iterator<Item = u32>,
 {
     let mut total_fuel_mass = 0;
     for mass in lines {

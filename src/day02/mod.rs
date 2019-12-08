@@ -21,19 +21,9 @@ pub fn entry_b(line: String) -> String {
 }
 
 fn to_instruction_vect(line: String) -> Vec<u32> {
-    line.split(",").map(|s| -> u32{ s.parse().unwrap() }).collect()
-}
-
-fn to_string(v: Vec<u32>) -> String {
-    let mut s = v.into_iter().map(|u| u.to_string() + ",").collect::<String>();
-    s.pop();
-    s
-}
-
-fn run(s: String) -> String {
-    let mut v = to_instruction_vect(s);
-    run_ops(&mut v);
-    to_string(v)
+    line.split(",")
+        .map(|s| -> u32 { s.parse().unwrap() })
+        .collect()
 }
 
 fn run_ops(ops: &mut Vec<u32>) -> Result<(), &str> {
@@ -47,9 +37,11 @@ fn run_ops(ops: &mut Vec<u32>) -> Result<(), &str> {
                         let opb_cur = *ops.get(cur + 2).unwrap() as usize;
                         let result_cur = *ops.get(cur + 3).unwrap() as usize;
                         if *i == 1 {
-                            *ops.get_mut(result_cur).unwrap() = ops.get(opa_cur).unwrap() + ops.get(opb_cur).unwrap()
+                            *ops.get_mut(result_cur).unwrap() =
+                                ops.get(opa_cur).unwrap() + ops.get(opb_cur).unwrap()
                         } else {
-                            *ops.get_mut(result_cur).unwrap() = ops.get(opa_cur).unwrap() * ops.get(opb_cur).unwrap()
+                            *ops.get_mut(result_cur).unwrap() =
+                                ops.get(opa_cur).unwrap() * ops.get(opb_cur).unwrap()
                         }
                     }
                     99 => break Ok(()),
@@ -66,6 +58,21 @@ fn run_ops(ops: &mut Vec<u32>) -> Result<(), &str> {
 mod tests {
     use super::*;
 
+    fn to_string(v: Vec<u32>) -> String {
+        let mut s = v
+            .into_iter()
+            .map(|u| u.to_string() + ",")
+            .collect::<String>();
+        s.pop();
+        s
+    }
+
+    fn run(s: String) -> String {
+        let mut v = to_instruction_vect(s);
+        run_ops(&mut v).unwrap();
+        to_string(v)
+    }
+
     #[test]
     fn to_from() {
         let s = String::from("1,2,3");
@@ -79,6 +86,9 @@ mod tests {
         assert_eq!(run(String::from("1,0,0,0,99")), "2,0,0,0,99");
         assert_eq!(run(String::from("2,3,0,3,99")), "2,3,0,6,99");
         assert_eq!(run(String::from("2,4,4,5,99,0")), "2,4,4,5,99,9801");
-        assert_eq!(run(String::from("1,1,1,4,99,5,6,0,99")), "30,1,1,4,2,5,6,0,99");
+        assert_eq!(
+            run(String::from("1,1,1,4,99,5,6,0,99")),
+            "30,1,1,4,2,5,6,0,99"
+        );
     }
 }
