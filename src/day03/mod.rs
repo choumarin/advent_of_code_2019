@@ -29,14 +29,30 @@ struct Point {
 
 impl Point {
     fn distance_from_origin(&self) -> u32 {
-        (self.x.abs() + self.y.abs()) as u32
+        self.distance_from(&Point { x: 0, y: 0 })
     }
+
+    fn distance_from(&self, other: &Point) -> u32 {
+        (self.x - other.x).abs() as u32 + (self.y - other.y).abs() as u32
+    }
+}
+
+#[derive(Debug)]
+struct PointWithSteps {
+    point: Point,
+    steps: u32,
 }
 
 #[derive(PartialEq, Debug)]
 struct Segment {
     a: Point,
     b: Point,
+}
+
+impl Segment {
+    fn len(&self) -> u32 {
+        (self.a.x - self.b.x).abs() as u32 + (self.a.y - self.b.y).abs() as u32
+    }
 }
 
 #[derive(PartialEq, Debug)]
@@ -165,8 +181,44 @@ fn crossing_distance(s: &str) -> u32 {
         .unwrap()
 }
 
+fn intersections_with_steps(wire1: &Wire, wire2: &Wire) -> Vec<PointWithSteps> {
+    let mut intersections = vec![];
+    let mut steps1 = 0;
+    for s1 in wire1.segments() {
+        let mut steps2 = 0;
+        for s2 in wire2.segments() {
+            let int = segments_intersect(&s1, &s2);
+            for i in int {
+                let p = PointWithSteps {
+                    point: i,
+                    steps: steps1 + steps2 + i.distance_from(&s1.a) + i.distance_from(&s2.a),
+                };
+                intersections.push(p);
+            }
+            steps2 += s2.len();
+        }
+        steps1 += s1.len()
+    }
+    intersections
+}
+
+fn best_intersection(s: &str) -> u32 {
+    let wires = split_input(s);
+    assert_eq!(wires.len(), 2);
+    intersections_with_steps(&wires.get(0).unwrap(), &wires.get(1).unwrap())
+        .into_iter()
+        .filter(|p| p.point != Point { x: 0, y: 0 })
+        .map(|i| i.steps)
+        .min()
+        .unwrap()
+}
+
 pub fn entry_a(wires: String) -> String {
     crossing_distance(wires.as_str()).to_string()
+}
+
+pub fn entry_b(wires: String) -> String {
+    best_intersection(wires.as_str()).to_string()
 }
 
 #[cfg(test)]
@@ -307,14 +359,21 @@ U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
     #[test]
     fn official_results_b() {
         assert_eq!(
-            total_steps(
+            best_intersection(
+                "R8,U5,L5,D3
+U7,R6,D4,L4"
+            ),
+            30
+        );
+        assert_eq!(
+            best_intersection(
                 "R75,D30,R83,U83,L12,D49,R71,U7,L72
 U62,R66,U55,R34,D71,R55,D58,R83"
             ),
             610
         );
         assert_eq!(
-            total_steps(
+            best_intersection(
                 "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
 U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
             ),

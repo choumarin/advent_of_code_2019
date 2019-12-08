@@ -33,4 +33,10 @@ fn main() {
     file.read_to_string(&mut content).unwrap();
     let content = content.trim().to_string();
     println!("day03_a answer: {}", day03::entry_a(content));
+
+    let mut file = File::open("src/day03/input.txt").unwrap();
+    let mut content = String::new();
+    file.read_to_string(&mut content).unwrap();
+    let content = content.trim().to_string();
+    println!("day03_b answer: {}", day03::entry_b(content));
 }
