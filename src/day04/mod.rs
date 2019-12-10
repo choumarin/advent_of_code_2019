@@ -1,3 +1,6 @@
+use std::fmt;
+use std::fmt::{Error, Formatter};
+
 #[derive(Debug, PartialEq, PartialOrd)]
 struct Password {
     code: [u32; 6],
@@ -23,10 +26,6 @@ impl Password {
             u /= 10;
         }
         Password { code }
-    }
-
-    fn to_string(&self) -> String {
-        self.code.iter().map(|x| x.to_string()).collect::<String>()
     }
 
     fn is_valid(&self) -> bool {
@@ -68,6 +67,16 @@ impl Password {
             }
         }
         test_a && test_b
+    }
+}
+
+impl fmt::Display for Password {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        write!(
+            f,
+            "{}",
+            self.code.iter().map(|x| x.to_string()).collect::<String>()
+        )
     }
 }
 
