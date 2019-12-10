@@ -4,6 +4,7 @@ use std::io::{BufRead, BufReader, Read};
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 
 fn main() {
     let file = File::open("src/day01/input.txt").unwrap();
@@ -39,4 +40,16 @@ fn main() {
     file.read_to_string(&mut content).unwrap();
     let content = content.trim().to_string();
     println!("day03_b answer: {}", day03::entry_b(content));
+
+    let mut file = File::open("src/day04/input.txt").unwrap();
+    let mut content = String::new();
+    file.read_to_string(&mut content).unwrap();
+    let content = content.trim().to_string();
+    println!("day04_a answer: {}", day04::entry_a(content));
+
+    let mut file = File::open("src/day04/input.txt").unwrap();
+    let mut content = String::new();
+    file.read_to_string(&mut content).unwrap();
+    let content = content.trim().to_string();
+    println!("day04_b answer: {}", day04::entry_b(content));
 }
